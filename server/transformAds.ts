@@ -84,13 +84,13 @@ export function isStoredOfferEligible(offer:Offer):boolean {
 }
 
 const NICHE_SIGNALS:Record<string,RegExp>={
-  educaÃ§Ã£o:/\b(educa|professor|alfabet|pedag|escolar|aluno|aula|curso|enem|atividade)\w*/i,
-  saÃºde:/\b(sa[uÃº]de|bem.?estar|alimenta|exerc[iÃ­]cio|terap|nutri|cl[iÃ­]nica)\w*/i,
-  espiritualidade:/\b(espiritual|b[iÃ­]blia|devocional|ora[cÃ§][aÃ£]o|f[eÃ©]|teologia)\w*/i,
-  artesanato:/\b(artesan|molde|papelaria|croch[eÃª]|costura|feito.?[aÃ ].?m[aÃ£]o)\w*/i,
-  culinÃ¡ria:/\b(culin[aÃ¡]ria|receita|confeitaria|doce|bolo|cozinha|gastronom)\w*/i,
-  profissionalizante:/\b(profissional|t[eÃ©]cnico|curso|manual|apostila|certificado|capacita)\w*/i,
-  emagrecimento:/\b(emagrec|dieta|fitness|peso|gordura|plano.?alimentar)\w*/i,
+  'educaÃ§Ã£o':/\b(educa|professor|alfabet|pedag|escolar|aluno|aula|curso|enem|atividade)\w*/i,
+  'saÃºde':/\b(sa[uÃº]de|bem.?estar|alimenta|exerc[iÃ­]cio|terap|nutri|cl[iÃ­]nica)\w*/i,
+  'espiritualidade':/\b(espiritual|b[iÃ­]blia|devocional|ora[cÃ§][aÃ£]o|f[eÃ©]|teologia)\w*/i,
+  'artesanato':/\b(artesan|molde|papelaria|croch[eÃª]|costura|feito.?[aÃ ].?m[aÃ£]o)\w*/i,
+  'culinÃ¡ria':/\b(culin[aÃ¡]ria|receita|confeitaria|doce|bolo|cozinha|gastronom)\w*/i,
+  'profissionalizante':/\b(profissional|t[eÃ©]cnico|curso|manual|apostila|certificado|capacita)\w*/i,
+  'emagrecimento':/\b(emagrec|dieta|fitness|peso|gordura|plano.?alimentar)\w*/i,
   'renda extra':/\b(renda|neg[oÃ³]cio|vendas?|marketing|fatur|empreend)\w*/i,
 };
 
