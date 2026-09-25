@@ -1,19 +1,19 @@
-﻿import './env';
+import './env.js';
 import express from 'express';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import type { Offer } from '../src/types/offer.ts';
-import type { MonitoredSearch } from '../src/types/search.ts';
-import { buildNicheQueries } from './nicheQueries.ts';
-import { getApifyIntegrationStatus, runApifyCollection } from './apifyClient.ts';
-import { isStoredOfferEligible, transformAdsToOffers } from './transformAds.ts';
-import { keepValidatedLowTicketOffers } from './landingPageClassifier.ts';
-import { readJson, writeJson } from './store.ts';
-import { requireAuth, AuthenticatedRequest } from './authMiddleware.ts';
-import { SearchesRepository } from './repositories/searchesRepository.ts';
-import { OffersRepository } from './repositories/offersRepository.ts';
-import { FavoritesRepository } from './repositories/favoritesRepository.ts';
-import { finishPendingMining, startDueMining } from './scheduler.ts';
+import type { Offer } from '../src/types/offer.js';
+import type { MonitoredSearch } from '../src/types/search.js';
+import { buildNicheQueries } from './nicheQueries.js';
+import { getApifyIntegrationStatus, runApifyCollection } from './apifyClient.js';
+import { isStoredOfferEligible, transformAdsToOffers } from './transformAds.js';
+import { keepValidatedLowTicketOffers } from './landingPageClassifier.js';
+import { readJson, writeJson } from './store.js';
+import { requireAuth, AuthenticatedRequest } from './authMiddleware.js';
+import { SearchesRepository } from './repositories/searchesRepository.js';
+import { OffersRepository } from './repositories/offersRepository.js';
+import { FavoritesRepository } from './repositories/favoritesRepository.js';
+import { finishPendingMining, startDueMining } from './scheduler.js';
 
 
 export const app = express();

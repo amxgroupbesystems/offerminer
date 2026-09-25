@@ -1,7 +1,7 @@
-﻿import assert from 'node:assert/strict';
+import assert from 'node:assert/strict';
 import test from 'node:test';
-import { isStoredOfferEligible, transformAdsToOffers } from './transformAds.ts';
-import { validateLowTicketLandingPage } from './landingPageClassifier.ts';
+import { isStoredOfferEligible, transformAdsToOffers } from './transformAds.js';
+import { validateLowTicketLandingPage } from './landingPageClassifier.js';
 
 const now=new Date('2026-09-24T12:00:00.000Z');
 function rawAd(id:string,overrides:Record<string,unknown>={}){

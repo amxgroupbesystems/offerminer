@@ -1,4 +1,4 @@
-﻿import { supabaseAdmin } from './supabase.ts';
+import { supabaseAdmin } from './supabase.js';
 
 export type DueSearchRow={id:string;user_id:string;name:string;keyword:string|null;niche:string;queries:any[];country:string;status:string;frequency:string;limit_results:number;next_execution_at:string|null};
 export type RunRow={id:string;user_id:string;search_id:string;status:string;provider_run_id:string|null;token_slot:number|null;started_at:string|null;created_at:string};

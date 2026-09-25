@@ -1,4 +1,4 @@
-﻿const normalize=(value:string)=>value.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLocaleLowerCase('pt-BR').trim();
+const normalize=(value:string)=>value.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLocaleLowerCase('pt-BR').trim();
 
 export const PRODUCT_FORMATS=['ebook','e-book','guia','guia completo','guia prÃ¡tico','manual','apostila','checklist','planilha','planner','calendÃ¡rio','cronograma','cardÃ¡pio','lista','pack','pacote','kit','combo','templates','modelos','scripts','roteiro','prompts','mapa mental','infogrÃ¡fico','PDF','curso','minicurso','mini curso','aula','aula gravada','treinamento','workshop','desafio','mÃ©todo','protocolo','programa','passo a passo','Ã¡udio','Ã¡udios','meditaÃ§Ã£o','receitas','exercÃ­cios','atividades','fichas','material','biblioteca','comunidade','mentoria','ferramenta','calculadora'] as const;
 

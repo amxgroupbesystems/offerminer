@@ -1,4 +1,4 @@
-﻿import { supabaseAdmin } from '../supabase.ts';
+import { supabaseAdmin } from '../supabase.js';
 
 export class FavoritesRepository {
   /**

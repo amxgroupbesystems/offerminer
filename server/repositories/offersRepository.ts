@@ -1,5 +1,5 @@
-﻿import { supabaseAdmin } from '../supabase.ts';
-import type { Offer } from '../../src/types/offer.ts';
+import { supabaseAdmin } from '../supabase.js';
+import type { Offer } from '../../src/types/offer.js';
 
 export class OffersRepository {
   /**

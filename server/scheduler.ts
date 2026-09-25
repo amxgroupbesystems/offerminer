@@ -1,10 +1,10 @@
-﻿import { buildNicheQueries } from './nicheQueries.ts';
-import { getApifyDataset, getApifyRun, startApifyCollection } from './apifyClient.ts';
-import { transformAdsToOffers } from './transformAds.ts';
-import { keepValidatedLowTicketOffers } from './landingPageClassifier.ts';
-import { OffersRepository } from './repositories/offersRepository.ts';
-import { findDueSearches, claimSearch, createRun, findPendingRuns, finishSearch, releaseSearch, updateRun } from './schedulerRepository.ts';
-import { supabaseAdmin } from './supabase.ts';
+import { buildNicheQueries } from './nicheQueries.js';
+import { getApifyDataset, getApifyRun, startApifyCollection } from './apifyClient.js';
+import { transformAdsToOffers } from './transformAds.js';
+import { keepValidatedLowTicketOffers } from './landingPageClassifier.js';
+import { OffersRepository } from './repositories/offersRepository.js';
+import { findDueSearches, claimSearch, createRun, findPendingRuns, finishSearch, releaseSearch, updateRun } from './schedulerRepository.js';
+import { supabaseAdmin } from './supabase.js';
 
 export async function startDueMining(limit=2){
   const candidates=await findDueSearches(Math.max(1,Math.min(limit,10))); let started=0;

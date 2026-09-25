@@ -1,4 +1,4 @@
-﻿import { randomInt } from 'node:crypto';
+import { randomInt } from 'node:crypto';
 
 const API_BASE='https://api.apify.com/v2';
 const TERMINAL_STATUSES=new Set(['SUCCEEDED','FAILED','ABORTED','TIMED-OUT']);

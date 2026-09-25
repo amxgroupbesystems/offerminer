@@ -1,6 +1,6 @@
-﻿import crypto from 'node:crypto';
-import type { Ad, Creative, CreativeFormat, FunnelType, Offer, Platform } from '../src/types/offer.ts';
-import { getNicheSeeds, PRODUCT_FORMATS } from './nicheQueries.ts';
+import crypto from 'node:crypto';
+import type { Ad, Creative, CreativeFormat, FunnelType, Offer, Platform } from '../src/types/offer.js';
+import { getNicheSeeds, PRODUCT_FORMATS } from './nicheQueries.js';
 
 type Raw = Record<string, any>;
 const P: Record<string, Platform> = { FACEBOOK:'facebook', INSTAGRAM:'instagram', MESSENGER:'messenger', AUDIENCE_NETWORK:'audience_network', THREADS:'threads' };

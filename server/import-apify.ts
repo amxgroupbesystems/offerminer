@@ -1,9 +1,9 @@
-﻿import dotenv from 'dotenv';
+import dotenv from 'dotenv';
 import fs from 'node:fs/promises';
-import type { Offer } from '../src/types/offer.ts';
-import { transformAdsToOffers } from './transformAds.ts';
-import { keepValidatedLowTicketOffers } from './landingPageClassifier.ts';
-import { readJson, writeJson } from './store.ts';
+import type { Offer } from '../src/types/offer.js';
+import { transformAdsToOffers } from './transformAds.js';
+import { keepValidatedLowTicketOffers } from './landingPageClassifier.js';
+import { readJson, writeJson } from './store.js';
 
 dotenv.config({ path: ['.env.local', '.env'] });
 

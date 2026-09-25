@@ -1,4 +1,4 @@
-﻿import type { Offer } from '../src/types/offer.ts';
+import type { Offer } from '../src/types/offer.js';
 
 const BLOCKED_HOSTS = [
   /(^|\.)facebook\.com$/i, /(^|\.)instagram\.com$/i, /(^|\.)messenger\.com$/i,

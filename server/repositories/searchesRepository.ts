@@ -1,5 +1,5 @@
-﻿import { supabaseAdmin } from '../supabase.ts';
-import type { MonitoredSearch, CreateSearchInput } from '../../src/types/search.ts';
+import { supabaseAdmin } from '../supabase.js';
+import type { MonitoredSearch, CreateSearchInput } from '../../src/types/search.js';
 
 export class SearchesRepository {
   /**
