@@ -1,4 +1,4 @@
-import type { Offer } from '../src/types/offer';
+﻿import type { Offer } from '../src/types/offer.ts';
 
 const BLOCKED_HOSTS = [
   /(^|\.)facebook\.com$/i, /(^|\.)instagram\.com$/i, /(^|\.)messenger\.com$/i,
@@ -7,10 +7,10 @@ const BLOCKED_HOSTS = [
   /(^|\.)shopee\./i, /(^|\.)aliexpress\./i, /(^|\.)magazineluiza\.com/i,
 ];
 
-const DIGITAL = /\b(e-?book|pdf|guia|manual|apostila|checklist|planilha|planner|kit|pack|combo|template|modelo|prompt|curso|treinamento|m[eé]todo|protocolo|material|atividade|aula|receita|b[oô]nus|acesso imediato|download)\b/i;
+const DIGITAL = /\b(e-?book|pdf|guia|manual|apostila|checklist|planilha|planner|kit|pack|combo|template|modelo|prompt|curso|treinamento|m[eÃ©]todo|protocolo|material|atividade|aula|receita|b[oÃ´]nus|acesso imediato|download)\b/i;
 const CTA = /\b(comprar agora|quero (?:comprar|receber|garantir)|garanta (?:agora|o seu)|acesso imediato|comece agora|adquirir|eu quero|inscreva-se)\b/i;
-const SECTIONS = [/[bôo]nus/i, /garantia(?: incondicional)?(?: de)? 7 dias/i, /depoimentos?|quem (?:já )?comprou/i, /perguntas frequentes|faq/i, /o que (?:voc[eê] )?(?:vai|ir[aá]) receber/i, /benef[ií]cios?|por que escolher/i];
-const ECOMMERCE = /\b(adicionar ao carrinho|categorias de produtos|filtrar produtos|ordene por|frete gr[aá]tis|tamanhos?\s*:|sku\s*:|estoque|meus pedidos)\b/i;
+const SECTIONS = [/[bÃ´o]nus/i, /garantia(?: incondicional)?(?: de)? 7 dias/i, /depoimentos?|quem (?:jÃ¡ )?comprou/i, /perguntas frequentes|faq/i, /o que (?:voc[eÃª] )?(?:vai|ir[aÃ¡]) receber/i, /benef[iÃ­]cios?|por que escolher/i];
+const ECOMMERCE = /\b(adicionar ao carrinho|categorias de produtos|filtrar produtos|ordene por|frete gr[aÃ¡]tis|tamanhos?\s*:|sku\s*:|estoque|meus pedidos)\b/i;
 
 function publicDestination(raw: string): URL | null {
   try {
@@ -47,7 +47,7 @@ export type LandingValidation = { accepted: boolean; finalUrl: string; reason: s
 
 export async function validateLowTicketLandingPage(offer: Offer): Promise<LandingValidation> {
   let current = publicDestination(offer.salesPageUrl);
-  if (!current) return { accepted: false, finalUrl: offer.salesPageUrl, reason: 'destino bloqueado ou inválido' };
+  if (!current) return { accepted: false, finalUrl: offer.salesPageUrl, reason: 'destino bloqueado ou invÃ¡lido' };
 
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), 10_000);
@@ -68,13 +68,13 @@ export async function validateLowTicketLandingPage(offer: Offer): Promise<Landin
       }
       break;
     }
-    if (!response?.ok) return { accepted: false, finalUrl: current.toString(), reason: `página respondeu HTTP ${response?.status ?? 0}` };
+    if (!response?.ok) return { accepted: false, finalUrl: current.toString(), reason: `pÃ¡gina respondeu HTTP ${response?.status ?? 0}` };
     const contentType = response.headers.get('content-type') || '';
     if (!contentType.includes('text/html') && !contentType.includes('application/xhtml+xml')) {
-      return { accepted: false, finalUrl: current.toString(), reason: 'destino não é uma página HTML' };
+      return { accepted: false, finalUrl: current.toString(), reason: 'destino nÃ£o Ã© uma pÃ¡gina HTML' };
     }
     const contentLength = Number(response.headers.get('content-length') || 0);
-    if (contentLength > 2_000_000) return { accepted: false, finalUrl: current.toString(), reason: 'página excede o limite de análise' };
+    if (contentLength > 2_000_000) return { accepted: false, finalUrl: current.toString(), reason: 'pÃ¡gina excede o limite de anÃ¡lise' };
     const html = (await response.text()).slice(0, 2_000_000);
     const text = visibleText(html);
     const combined = `${text} ${offer.summary} ${offer.ads.map((ad) => `${ad.body} ${ad.title || ''} ${ad.callToAction || ''}`).join(' ')}`;
@@ -96,7 +96,7 @@ export async function validateLowTicketLandingPage(offer: Offer): Promise<Landin
     return { accepted, finalUrl: current.toString(), reason: accepted ? `low ticket confirmado (${score} sinais)` : `sinais insuficientes (${score})` };
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
-    return { accepted: false, finalUrl: current.toString(), reason: `não foi possível validar a página: ${message}` };
+    return { accepted: false, finalUrl: current.toString(), reason: `nÃ£o foi possÃ­vel validar a pÃ¡gina: ${message}` };
   } finally { clearTimeout(timer); }
 }
 
@@ -118,3 +118,4 @@ export async function keepValidatedLowTicketOffers(offers: Offer[]): Promise<Off
   }
   return kept;
 }
+

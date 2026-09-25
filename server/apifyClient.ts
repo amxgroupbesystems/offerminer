@@ -1,4 +1,4 @@
-import { randomInt } from 'node:crypto';
+﻿import { randomInt } from 'node:crypto';
 
 const API_BASE='https://api.apify.com/v2';
 const TERMINAL_STATUSES=new Set(['SUCCEEDED','FAILED','ABORTED','TIMED-OUT']);
@@ -28,7 +28,7 @@ function errorDetail(error:unknown):string{
 function getActiveTokenSlot():number{
   const slot=Number(process.env.APIFY_ACTIVE_TOKEN||1);
   if(!Number.isInteger(slot)||slot<1||slot>15){
-    throw new Error('APIFY_ACTIVE_TOKEN deve ser um número inteiro entre 1 e 15.');
+    throw new Error('APIFY_ACTIVE_TOKEN deve ser um nÃºmero inteiro entre 1 e 15.');
   }
   return slot;
 }
@@ -49,9 +49,9 @@ function selectToken():{slot:number;token:string;mode:'fixed'|'random'}{
   const slots=configuredTokenSlots();
   if(!slots.length)throw new Error('Nenhum token Apify foi configurado no arquivo .env.local.');
   const slot=mode==='random'?slots[randomInt(slots.length)]:getActiveTokenSlot();
-  // APIFY_TOKEN mantém compatibilidade com instalações anteriores na posição 1.
+  // APIFY_TOKEN mantÃ©m compatibilidade com instalaÃ§Ãµes anteriores na posiÃ§Ã£o 1.
   const token=(process.env[`APIFY_TOKEN_${slot}`]||(slot===1?process.env.APIFY_TOKEN:''))?.trim();
-  if(!token)throw new Error(`APIFY_TOKEN_${slot} não configurado no arquivo .env.local.`);
+  if(!token)throw new Error(`APIFY_TOKEN_${slot} nÃ£o configurado no arquivo .env.local.`);
   return {slot,token,mode};
 }
 
@@ -66,7 +66,7 @@ export function getApifyIntegrationStatus():ApifyIntegrationStatus{
   const slots=configuredTokenSlots();
   return {
     configured:selectionMode==='random'?slots.length>0:Boolean(token),
-    tokenMasked:token?`••••${token.slice(-4)}`:null,
+    tokenMasked:token?`â€¢â€¢â€¢â€¢${token.slice(-4)}`:null,
     selectionMode,
     activeTokenSlot,
     configuredTokenSlots:slots,
@@ -87,7 +87,7 @@ async function apifyFetch(url:URL,token:string,init?:RequestInit,retries=2):Prom
     if(attempt<retries)await delay(1000*2**attempt);
   }
   const detail=errorDetail(lastError);
-  throw new Error(`Não foi possível comunicar com a Apify após novas tentativas: ${detail}`);
+  throw new Error(`NÃ£o foi possÃ­vel comunicar com a Apify apÃ³s novas tentativas: ${detail}`);
 }
 
 async function responseData<T>(response:Response,context:string):Promise<T>{
@@ -101,25 +101,25 @@ export async function startApifyCollection(input:{queries:string[];country:strin
   console.log(`[APIFY] tokenSlot=${selected.slot} modo=${selected.mode}`);
   const actor=getActorId().replace('/','~');
   const keywords=[...new Set(input.queries.map(query=>query.trim()).filter(Boolean))];
-  if(!keywords.length)throw new Error('Nenhuma palavra-chave válida foi informada para a coleta.');
+  if(!keywords.length)throw new Error('Nenhuma palavra-chave vÃ¡lida foi informada para a coleta.');
   const maxAds=Math.max(1,Math.min(input.resultsPerQuery,1000));
   const startUrl=new URL(`${API_BASE}/acts/${actor}/runs`); startUrl.searchParams.set('waitForFinish','0');
   const startResponse=await apifyFetch(startUrl,selected.token,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({keywords,searchType:'keyword_unordered',country:input.country||'BR',activeStatus:'active',maxAds,maxConcurrency:1,raw:false,proxyConfiguration:{useApifyProxy:true,apifyProxyGroups:['RESIDENTIAL']}})});
   const run=await responseData<ApifyRun>(startResponse,'Falha ao iniciar o Actor da Apify');
-  if(!run.id)throw new Error('A Apify não informou o ID da execução.');
+  if(!run.id)throw new Error('A Apify nÃ£o informou o ID da execuÃ§Ã£o.');
   return {runId:run.id,tokenSlot:selected.slot,mode:selected.mode};
 }
 
 export async function getApifyRun(runId:string,tokenSlot:number):Promise<ApifyRun>{
   const token=(process.env[`APIFY_TOKEN_${tokenSlot}`]||(tokenSlot===1?process.env.APIFY_TOKEN:''))?.trim();
-  if(!token)throw new Error(`Token da posição ${tokenSlot} não está configurado.`);
+  if(!token)throw new Error(`Token da posiÃ§Ã£o ${tokenSlot} nÃ£o estÃ¡ configurado.`);
   const response=await apifyFetch(new URL(`${API_BASE}/actor-runs/${runId}`),token,undefined,3);
-  return responseData<ApifyRun>(response,'Falha ao consultar a execução da Apify');
+  return responseData<ApifyRun>(response,'Falha ao consultar a execuÃ§Ã£o da Apify');
 }
 
 export async function getApifyDataset(run:ApifyRun,tokenSlot:number):Promise<Record<string,any>[]> {
   const token=(process.env[`APIFY_TOKEN_${tokenSlot}`]||(tokenSlot===1?process.env.APIFY_TOKEN:''))?.trim();
-  if(!token)throw new Error(`Token da posição ${tokenSlot} não está configurado.`);
+  if(!token)throw new Error(`Token da posiÃ§Ã£o ${tokenSlot} nÃ£o estÃ¡ configurado.`);
   if(run.status!=='SUCCEEDED')throw new Error(`A coleta ${run.id} terminou com status ${run.status}.`);
   if(!run.defaultDatasetId)throw new Error(`A coleta ${run.id} terminou sem um Dataset associado.`);
   const url=new URL(`${API_BASE}/datasets/${run.defaultDatasetId}/items`); url.searchParams.set('clean','true'); url.searchParams.set('format','json');
@@ -136,9 +136,9 @@ export async function runApifyCollection(input:{
   console.log(`[APIFY] tokenSlot=${selected.slot} modo=${selected.mode}`);
   const actor=getActorId().replace('/','~');
   const keywords=[...new Set(input.queries.map(query=>query.trim()).filter(Boolean))];
-  if(!keywords.length)throw new Error('Nenhuma palavra-chave válida foi informada para a coleta.');
+  if(!keywords.length)throw new Error('Nenhuma palavra-chave vÃ¡lida foi informada para a coleta.');
 
-  // maxAds é o limite total desta execução no Actor da jmlp.
+  // maxAds Ã© o limite total desta execuÃ§Ã£o no Actor da jmlp.
   const maxAds=Math.max(1,Math.min(input.resultsPerQuery,1000));
   const startUrl=new URL(`${API_BASE}/acts/${actor}/runs`);
   startUrl.searchParams.set('waitForFinish','30');
@@ -151,16 +151,16 @@ export async function runApifyCollection(input:{
     }),
   });
   let run=await responseData<ApifyRun>(startResponse,'Falha ao iniciar o Actor da Apify');
-  if(!run.id)throw new Error('A Apify não informou o ID da execução.');
+  if(!run.id)throw new Error('A Apify nÃ£o informou o ID da execuÃ§Ã£o.');
 
   const deadline=Date.now()+15*60_000;
   while(!TERMINAL_STATUSES.has(run.status)&&Date.now()<deadline){
     const statusUrl=new URL(`${API_BASE}/actor-runs/${run.id}`);
     statusUrl.searchParams.set('waitForFinish','30');
     const statusResponse=await apifyFetch(statusUrl,token,undefined,3);
-    run=await responseData<ApifyRun>(statusResponse,'Falha ao consultar a execução da Apify');
+    run=await responseData<ApifyRun>(statusResponse,'Falha ao consultar a execuÃ§Ã£o da Apify');
   }
-  if(!TERMINAL_STATUSES.has(run.status))throw new Error(`A coleta ${run.id} continua na Apify após 15 minutos. Consulte o run antes de executar novamente.`);
+  if(!TERMINAL_STATUSES.has(run.status))throw new Error(`A coleta ${run.id} continua na Apify apÃ³s 15 minutos. Consulte o run antes de executar novamente.`);
   if(run.status!=='SUCCEEDED')throw new Error(`A coleta ${run.id} terminou com status ${run.status}${run.statusMessage?`: ${run.statusMessage}`:''}.`);
   if(!run.defaultDatasetId)throw new Error(`A coleta ${run.id} terminou sem um Dataset associado.`);
 
@@ -172,3 +172,4 @@ export async function runApifyCollection(input:{
   if(!Array.isArray(items))throw new Error('A Apify retornou um Dataset em formato inesperado.');
   return items;
 }
+

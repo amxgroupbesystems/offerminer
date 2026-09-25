@@ -1,10 +1,10 @@
-import { buildNicheQueries } from './nicheQueries';
-import { getApifyDataset, getApifyRun, startApifyCollection } from './apifyClient';
-import { transformAdsToOffers } from './transformAds';
-import { keepValidatedLowTicketOffers } from './landingPageClassifier';
-import { OffersRepository } from './repositories/offersRepository';
-import { findDueSearches, claimSearch, createRun, findPendingRuns, finishSearch, releaseSearch, updateRun } from './schedulerRepository';
-import { supabaseAdmin } from './supabase';
+﻿import { buildNicheQueries } from './nicheQueries.ts';
+import { getApifyDataset, getApifyRun, startApifyCollection } from './apifyClient.ts';
+import { transformAdsToOffers } from './transformAds.ts';
+import { keepValidatedLowTicketOffers } from './landingPageClassifier.ts';
+import { OffersRepository } from './repositories/offersRepository.ts';
+import { findDueSearches, claimSearch, createRun, findPendingRuns, finishSearch, releaseSearch, updateRun } from './schedulerRepository.ts';
+import { supabaseAdmin } from './supabase.ts';
 
 export async function startDueMining(limit=2){
   const candidates=await findDueSearches(Math.max(1,Math.min(limit,10))); let started=0;
@@ -32,7 +32,7 @@ export async function finishPendingMining(limit=10){
   for(const run of runs){
     if(!run.provider_run_id||run.token_slot===null){
       if(Date.now()-new Date(run.created_at).getTime()>10*60_000){
-        await updateRun(run.id,{status:'failed',error_message:'Execução não recebeu ID da Apify.',finished_at:new Date().toISOString()});
+        await updateRun(run.id,{status:'failed',error_message:'ExecuÃ§Ã£o nÃ£o recebeu ID da Apify.',finished_at:new Date().toISOString()});
         await releaseSearch(run.search_id,run.user_id);
       }
       continue;
@@ -45,7 +45,7 @@ export async function finishPendingMining(limit=10){
         await releaseSearch(run.search_id,run.user_id); continue;
       }
       const {data:search,error}=await supabaseAdmin.from('monitored_searches').select('*').eq('id',run.search_id).eq('user_id',run.user_id).single();
-      if(error||!search)throw new Error('Pesquisa associada não encontrada.');
+      if(error||!search)throw new Error('Pesquisa associada nÃ£o encontrada.');
       const raw=await getApifyDataset(apifyRun,run.token_slot);
       const queries=buildNicheQueries(search.niche||search.name,search.keyword||'');
       const candidates=transformAdsToOffers(raw,search.niche||search.name,queries,new Date(),search.keyword||'');
@@ -62,3 +62,4 @@ export async function finishPendingMining(limit=10){
   }
   return {pending:runs.length,completed,stillRunning};
 }
+

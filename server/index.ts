@@ -1,19 +1,19 @@
-import './env';
+﻿import './env';
 import express from 'express';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import type { Offer } from '../src/types/offer';
-import type { MonitoredSearch } from '../src/types/search';
-import { buildNicheQueries } from './nicheQueries';
-import { getApifyIntegrationStatus, runApifyCollection } from './apifyClient';
-import { isStoredOfferEligible, transformAdsToOffers } from './transformAds';
-import { keepValidatedLowTicketOffers } from './landingPageClassifier';
-import { readJson, writeJson } from './store';
-import { requireAuth, AuthenticatedRequest } from './authMiddleware';
-import { SearchesRepository } from './repositories/searchesRepository';
-import { OffersRepository } from './repositories/offersRepository';
-import { FavoritesRepository } from './repositories/favoritesRepository';
-import { finishPendingMining, startDueMining } from './scheduler';
+import type { Offer } from '../src/types/offer.ts';
+import type { MonitoredSearch } from '../src/types/search.ts';
+import { buildNicheQueries } from './nicheQueries.ts';
+import { getApifyIntegrationStatus, runApifyCollection } from './apifyClient.ts';
+import { isStoredOfferEligible, transformAdsToOffers } from './transformAds.ts';
+import { keepValidatedLowTicketOffers } from './landingPageClassifier.ts';
+import { readJson, writeJson } from './store.ts';
+import { requireAuth, AuthenticatedRequest } from './authMiddleware.ts';
+import { SearchesRepository } from './repositories/searchesRepository.ts';
+import { OffersRepository } from './repositories/offersRepository.ts';
+import { FavoritesRepository } from './repositories/favoritesRepository.ts';
+import { finishPendingMining, startDueMining } from './scheduler.ts';
 
 
 export const app = express();
@@ -30,7 +30,7 @@ app.use((req, res, next) => {
   next();
 });
 
-// JSON fallback functions (usados se Supabase não estiver configurado)
+// JSON fallback functions (usados se Supabase nÃ£o estiver configurado)
 const isSupabaseConfigured = Boolean(
   (process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL) &&
     process.env.SUPABASE_SERVICE_ROLE_KEY
@@ -40,9 +40,9 @@ const offersJson = () => readJson<Offer[]>('catalog.json', []);
 const searchesJson = () => readJson<MonitoredSearch[]>('searches.json', []);
 function requireCronSecret(req: express.Request,res: express.Response): boolean {
   const expected=process.env.CRON_SECRET?.trim();
-  if(!expected){res.status(503).json({message:'CRON_SECRET não configurado.'});return false;}
+  if(!expected){res.status(503).json({message:'CRON_SECRET nÃ£o configurado.'});return false;}
   const supplied=req.header('x-cron-secret')||req.header('authorization')?.replace(/^Bearer\s+/i,'');
-  if(supplied!==expected){res.status(401).json({message:'Cron não autorizado.'});return false;}
+  if(supplied!==expected){res.status(401).json({message:'Cron nÃ£o autorizado.'});return false;}
   return true;
 }
 
@@ -55,7 +55,7 @@ app.post('/api/cron/start-mining', async (req,res)=>{
 app.post('/api/cron/check-runs', async (req,res)=>{
   if(!requireCronSecret(req,res))return;
   try{res.json(await finishPendingMining(Number(req.body?.limit)||Number(process.env.SCHEDULER_CHECK_BATCH_SIZE)||10));}
-  catch(error){console.error('[CRON] falha ao verificar execuções',error);res.status(500).json({message:'Falha ao verificar execuções pendentes.'});}
+  catch(error){console.error('[CRON] falha ao verificar execuÃ§Ãµes',error);res.status(500).json({message:'Falha ao verificar execuÃ§Ãµes pendentes.'});}
 });
 
 app.post('/api/cron/mining', async (req,res)=>{
@@ -64,10 +64,10 @@ app.post('/api/cron/mining', async (req,res)=>{
     const completed=await finishPendingMining(Number(process.env.SCHEDULER_CHECK_BATCH_SIZE)||10);
     const started=await startDueMining(Number(process.env.SCHEDULER_BATCH_SIZE)||2);
     res.json({completed,started});
-  }catch(error){console.error('[CRON] falha no ciclo',error);res.status(500).json({message:'Falha no ciclo automático.'});}
+  }catch(error){console.error('[CRON] falha no ciclo',error);res.status(500).json({message:'Falha no ciclo automÃ¡tico.'});}
 });
 
-// Health Check Endpoint (Público)
+// Health Check Endpoint (PÃºblico)
 app.get('/api/health', (_req, res) =>
   res.json({
     ok: true,
@@ -110,7 +110,7 @@ app.get('/api/offers', requireAuth, async (req: AuthenticatedRequest, res) => {
         return res.json(dbOffers.filter(isStoredOfferEligible));
       }
     }
-    // Fallback JSON para visualização de dados legados se banco vazio ou não configurado
+    // Fallback JSON para visualizaÃ§Ã£o de dados legados se banco vazio ou nÃ£o configurado
     const list = await offersJson();
     res.json(list.filter(isStoredOfferEligible));
   } catch (error: any) {
@@ -130,7 +130,7 @@ app.get('/api/offers/:id', requireAuth, async (req: AuthenticatedRequest, res) =
     const item = list.find((o) => o.id === req.params.id || o.slug === req.params.id);
     if (item && isStoredOfferEligible(item)) return res.json(item);
 
-    res.status(404).json({ message: 'Oferta não encontrada' });
+    res.status(404).json({ message: 'Oferta nÃ£o encontrada' });
   } catch (error: any) {
     res.status(500).json({ message: error.message });
   }
@@ -194,7 +194,7 @@ app.patch('/api/searches/:id/status', requireAuth, async (req: AuthenticatedRequ
   try {
     if (isSupabaseConfigured && req.user?.id) {
       const current = await SearchesRepository.getById(req.params.id, req.user.id);
-      if (!current) return res.status(404).json({ message: 'Pesquisa não encontrada' });
+      if (!current) return res.status(404).json({ message: 'Pesquisa nÃ£o encontrada' });
       const nextStatus = current.status === 'paused' ? 'active' : 'paused';
       const updated = await SearchesRepository.updateStatus(req.params.id, req.user.id, nextStatus);
       return res.json(updated);
@@ -202,7 +202,7 @@ app.patch('/api/searches/:id/status', requireAuth, async (req: AuthenticatedRequ
 
     const list = await searchesJson();
     const found = list.find((s) => s.id === req.params.id);
-    if (!found) return res.status(404).json({ message: 'Pesquisa não encontrada' });
+    if (!found) return res.status(404).json({ message: 'Pesquisa nÃ£o encontrada' });
     found.status = found.status === 'paused' ? 'active' : 'paused';
     await writeJson('searches.json', list);
     res.json(found);
@@ -224,11 +224,11 @@ app.post('/api/searches/:id/run', requireAuth, async (req: AuthenticatedRequest,
       search = list.find((s) => s.id === req.params.id) || null;
     }
 
-    if (!search) return res.status(404).json({ message: 'Pesquisa não encontrada' });
+    if (!search) return res.status(404).json({ message: 'Pesquisa nÃ£o encontrada' });
     if (search.status === 'running') {
       return res
         .status(409)
-        .json({ message: 'Esta pesquisa já está sendo executada. Aguarde a conclusão antes de iniciar novamente.' });
+        .json({ message: 'Esta pesquisa jÃ¡ estÃ¡ sendo executada. Aguarde a conclusÃ£o antes de iniciar novamente.' });
     }
 
     // Atualizar status para running no fallback JSON (o Supabase bloqueia via constraint e o estado React resolve na UI)
@@ -344,3 +344,4 @@ if (!process.env.VERCEL) {
 }
 
 export default app;
+

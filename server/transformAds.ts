@@ -1,6 +1,6 @@
-import crypto from 'node:crypto';
-import type { Ad, Creative, CreativeFormat, FunnelType, Offer, Platform } from '../src/types/offer';
-import { getNicheSeeds, PRODUCT_FORMATS } from './nicheQueries';
+﻿import crypto from 'node:crypto';
+import type { Ad, Creative, CreativeFormat, FunnelType, Offer, Platform } from '../src/types/offer.ts';
+import { getNicheSeeds, PRODUCT_FORMATS } from './nicheQueries.ts';
 
 type Raw = Record<string, any>;
 const P: Record<string, Platform> = { FACEBOOK:'facebook', INSTAGRAM:'instagram', MESSENGER:'messenger', AUDIENCE_NETWORK:'audience_network', THREADS:'threads' };
@@ -34,13 +34,13 @@ function groupKey(url:string,pageId:string):string {
 }
 function funnel(url:string,text:string):FunnelType {
   const v=`${url} ${text}`.toLowerCase();
-  if(/wa\.me|whatsapp/.test(v))return'whatsapp'; if(/quiz|question[aá]rio/.test(v))return'quiz';
+  if(/wa\.me|whatsapp/.test(v))return'whatsapp'; if(/quiz|question[aÃ¡]rio/.test(v))return'quiz';
   if(/checkout|pay\.|cakto|hotmart|kiwify|monetizze/.test(v))return'direct_checkout';
   if(/play\.google|itunes\.apple/.test(v))return'app'; return'sales_page';
 }
 function technology(url:string):string {
   try { const h=new URL(url).hostname; if(h.endsWith('.lovable.app'))return'Lovable'; if(/shopify/.test(h))return'Shopify'; if(/hotmart|kiwify|cakto|monetizze/.test(h))return'Checkout'; } catch {}
-  return'Domínio próprio';
+  return'DomÃ­nio prÃ³prio';
 }
 function price(text:string):number|null {
   const n=[...text.matchAll(/(?:r\$\s*|por\s+apenas\s+(?:r\$\s*)?)(\d{1,3}(?:[.,]\d{1,2})?)\b(?!\s*x)/gi)].map(m=>+m[1].replace(',','.')).filter(v=>v>0&&v<=500);
@@ -68,8 +68,8 @@ export function isLowTicketCandidate(item:Raw):boolean {
   const installment=/\b\d{1,2}\s*x\s*(?:de\s*)?(?:r\$\s*)?\d/i.test(text);
   const ticket=price(text);
   const digital=PRODUCT_FORMATS.some(format=>text.includes(format.toLocaleLowerCase('pt-BR')))||/\b(moldes?|material digital|acesso imediato|download|atividades?|templates?|arquivos?)\b/i.test(text);
-  const offer=/\b(por apenas|oferta|promo[cç][aã]o|b[oô]nus|garantia|compre agora|quero receber|acesso vital[ií]cio|entrega imediata)\b/i.test(text);
-  const unwanted=/\b(rifa|sorteio|concorra|centavinhos?|bilhete|n[uú]mero da sorte|ganhe (?:um|uma)|carro|caminhonete|motocicleta|ve[ií]culo|frete|estoque|tamanho p|tamanho m|tamanho g)\b/i.test(text);
+  const offer=/\b(por apenas|oferta|promo[cÃ§][aÃ£]o|b[oÃ´]nus|garantia|compre agora|quero receber|acesso vital[iÃ­]cio|entrega imediata)\b/i.test(text);
+  const unwanted=/\b(rifa|sorteio|concorra|centavinhos?|bilhete|n[uÃº]mero da sorte|ganhe (?:um|uma)|carro|caminhonete|motocicleta|ve[iÃ­]culo|frete|estoque|tamanho p|tamanho m|tamanho g)\b/i.test(text);
   return !unwanted&&!installment&&digital&&((ticket!==null&&ticket<=100)||offer);
 }
 
@@ -78,20 +78,20 @@ export function isStoredOfferEligible(offer:Offer):boolean {
   if(offer.activeAdsCount<1||offer.oldestActiveAdDays>maxAgeDays||!validDestination(offer.salesPageUrl))return false;
   const text=`${offer.name} ${offer.summary} ${offer.ads.map(ad=>`${ad.body} ${ad.title||''}`).join(' ')}`.toLocaleLowerCase('pt-BR');
   const digital=PRODUCT_FORMATS.some(format=>text.includes(format.toLocaleLowerCase('pt-BR')))||/\b(moldes?|material digital|acesso imediato|download|atividades?|templates?|arquivos?)\b/i.test(text);
-  const offerSignal=offer.ticket!==null&&offer.ticket>0&&offer.ticket<=100||/\b(por apenas|oferta|promo[cç][aã]o|b[oô]nus|garantia|compre agora|quero receber|acesso vital[ií]cio|entrega imediata)\b/i.test(text);
-  const unwanted=/\b(rifa|sorteio|concorra|centavinhos?|bilhete|n[uú]mero da sorte|ganhe (?:um|uma)|carro|caminhonete|motocicleta|ve[ií]culo|frete|estoque)\b/i.test(text);
+  const offerSignal=offer.ticket!==null&&offer.ticket>0&&offer.ticket<=100||/\b(por apenas|oferta|promo[cÃ§][aÃ£]o|b[oÃ´]nus|garantia|compre agora|quero receber|acesso vital[iÃ­]cio|entrega imediata)\b/i.test(text);
+  const unwanted=/\b(rifa|sorteio|concorra|centavinhos?|bilhete|n[uÃº]mero da sorte|ganhe (?:um|uma)|carro|caminhonete|motocicleta|ve[iÃ­]culo|frete|estoque)\b/i.test(text);
   return digital&&offerSignal&&!unwanted&&offer.ads.every(ad=>ad.isActive);
 }
 
 const NICHE_SIGNALS:Record<string,RegExp>={
-  educação:/\b(educa|professor|alfabet|pedag|escolar|aluno|aula|curso|enem|atividade)\w*/i,
-  saúde:/\b(sa[uú]de|bem.?estar|alimenta|exerc[ií]cio|terap|nutri|cl[ií]nica)\w*/i,
-  espiritualidade:/\b(espiritual|b[ií]blia|devocional|ora[cç][aã]o|f[eé]|teologia)\w*/i,
-  artesanato:/\b(artesan|molde|papelaria|croch[eê]|costura|feito.?[aà].?m[aã]o)\w*/i,
-  culinária:/\b(culin[aá]ria|receita|confeitaria|doce|bolo|cozinha|gastronom)\w*/i,
-  profissionalizante:/\b(profissional|t[eé]cnico|curso|manual|apostila|certificado|capacita)\w*/i,
+  educaÃ§Ã£o:/\b(educa|professor|alfabet|pedag|escolar|aluno|aula|curso|enem|atividade)\w*/i,
+  saÃºde:/\b(sa[uÃº]de|bem.?estar|alimenta|exerc[iÃ­]cio|terap|nutri|cl[iÃ­]nica)\w*/i,
+  espiritualidade:/\b(espiritual|b[iÃ­]blia|devocional|ora[cÃ§][aÃ£]o|f[eÃ©]|teologia)\w*/i,
+  artesanato:/\b(artesan|molde|papelaria|croch[eÃª]|costura|feito.?[aÃ ].?m[aÃ£]o)\w*/i,
+  culinÃ¡ria:/\b(culin[aÃ¡]ria|receita|confeitaria|doce|bolo|cozinha|gastronom)\w*/i,
+  profissionalizante:/\b(profissional|t[eÃ©]cnico|curso|manual|apostila|certificado|capacita)\w*/i,
   emagrecimento:/\b(emagrec|dieta|fitness|peso|gordura|plano.?alimentar)\w*/i,
-  'renda extra':/\b(renda|neg[oó]cio|vendas?|marketing|fatur|empreend)\w*/i,
+  'renda extra':/\b(renda|neg[oÃ³]cio|vendas?|marketing|fatur|empreend)\w*/i,
 };
 
 function isNicheRelevant(item:Raw,niche:string):boolean {
@@ -147,7 +147,7 @@ export function transformAdsToOffers(raw:Raw[],niche:string,keywords:string[],no
       const officialCount=Number(pick(item,'collation_count','collationCount','ads_using_count','adsUsingCount'))||0;
       if(old){old.adsUsingCount=Math.max(old.adsUsingCount+1,officialCount);if(new Date(startDate)<new Date(old.firstSeenAt))old.firstSeenAt=startDate;}
       else creatives.set(cid,{id:cid,type:m.type,thumbnailUrl:m.thumb,mediaUrl:m.url||undefined,title:title||undefined,body,adsUsingCount:Math.max(1,officialCount),firstSeenAt:startDate});
-      const pageId=String(pick(item,'page_id','pageId','pageID')||'unknown'), pageName=pick(item,'page_name','pageName')||pick(s,'page_name','pageName')||'Página não identificada', previous=advertisers.get(pageId);
+      const pageId=String(pick(item,'page_id','pageId','pageID')||'unknown'), pageName=pick(item,'page_name','pageName')||pick(s,'page_name','pageName')||'PÃ¡gina nÃ£o identificada', previous=advertisers.get(pageId);
       advertisers.set(pageId,{id:pageId,name:pageName,avatarUrl:pick(s,'page_profile_picture_url','pageProfilePictureUrl'),category:asArray<string>(pick(s,'page_categories','pageCategories'))[0],adsCount:(previous?.adsCount||0)+1});
       const platforms=asArray<string>(pick(item,'publisher_platform','publisherPlatform')).map((x:string)=>P[x]).filter(Boolean);
       ads.push({id:`ad-${libraryId}`,libraryId,libraryUrl:`https://www.facebook.com/ads/library/?id=${libraryId}`,advertiserPageId:pageId,advertiserPageName:pageName,body,title,callToAction:pick(s,'cta_text','ctaText')||pick(cards[0]??{},'cta_text','ctaText')||null,startDate,isActive:true,platforms,creativeId:cid,destinationUrl:g.destination});
@@ -164,6 +164,7 @@ export function transformAdsToOffers(raw:Raw[],niche:string,keywords:string[],no
     const mainCreative=[...cs].sort((a,b)=>b.adsUsingCount-a.adsUsingCount)[0];
     const advertiserPageId=ads[0]?.advertiserPageId;
     const advertiserLibraryUrl=advertiserPageId?`https://www.facebook.com/ads/library/?active_status=active&ad_type=all&country=ALL&view_all_page_id=${encodeURIComponent(advertiserPageId)}`:ads[0]?.libraryUrl;
-    return {id,slug:`${slug(String(name))}-${hash(key).slice(0,6)}`,name:String(name),summary:active[0]?.body?.slice(0,220)||'Oferta identificada na Meta Ads Library.',niche,country:'Brasil',language:'Português',status,funnelType:funnel(g.destination,text),creativeFormats:formats,hasVsl:/vsl|video sales letter|assista ao vídeo/i.test(text),ticket:price(text),currency:'BRL',activeAdsCount:count,uniqueCreativesCount:cs.length,oldestActiveAdDays:age,adsChangeLast7Days:0,scaleScore:score,salesPageUrl:g.destination,salesPageDomain:domain,pageTechnology:technology(g.destination),advertiserPages:[...advertisers.values()],mainCreative,creatives:cs,ads:active,keywords,platforms,firstSeenAt:oldest.toISOString(),lastCheckedAt:now.toISOString(),timeline:[{id:`timeline-${id}`,date:oldest.toISOString(),type:'first_seen',title:'Primeiro anúncio observado',description:'Data inicial mais antiga informada pela Meta.'}],history:[{date:now.toISOString().slice(0,10),activeAds:count,uniqueCreatives:cs.length}],isFavorite:false,scaleEvidences:[`${count} anúncios ativos observados`,`${cs.length} criativos únicos`,`Anúncio mais antigo iniciado há ${age} dias`],metaLibrarySearchUrl:advertiserLibraryUrl};
+    return {id,slug:`${slug(String(name))}-${hash(key).slice(0,6)}`,name:String(name),summary:active[0]?.body?.slice(0,220)||'Oferta identificada na Meta Ads Library.',niche,country:'Brasil',language:'PortuguÃªs',status,funnelType:funnel(g.destination,text),creativeFormats:formats,hasVsl:/vsl|video sales letter|assista ao vÃ­deo/i.test(text),ticket:price(text),currency:'BRL',activeAdsCount:count,uniqueCreativesCount:cs.length,oldestActiveAdDays:age,adsChangeLast7Days:0,scaleScore:score,salesPageUrl:g.destination,salesPageDomain:domain,pageTechnology:technology(g.destination),advertiserPages:[...advertisers.values()],mainCreative,creatives:cs,ads:active,keywords,platforms,firstSeenAt:oldest.toISOString(),lastCheckedAt:now.toISOString(),timeline:[{id:`timeline-${id}`,date:oldest.toISOString(),type:'first_seen',title:'Primeiro anÃºncio observado',description:'Data inicial mais antiga informada pela Meta.'}],history:[{date:now.toISOString().slice(0,10),activeAds:count,uniqueCreatives:cs.length}],isFavorite:false,scaleEvidences:[`${count} anÃºncios ativos observados`,`${cs.length} criativos Ãºnicos`,`AnÃºncio mais antigo iniciado hÃ¡ ${age} dias`],metaLibrarySearchUrl:advertiserLibraryUrl};
   }).filter(o=>o.activeAdsCount>0).sort((a,b)=>b.scaleScore-a.scaleScore);
 }
+

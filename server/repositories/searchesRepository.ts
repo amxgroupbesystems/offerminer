@@ -1,9 +1,9 @@
-import { supabaseAdmin } from '../supabase';
-import type { MonitoredSearch, CreateSearchInput } from '../../src/types/search';
+﻿import { supabaseAdmin } from '../supabase.ts';
+import type { MonitoredSearch, CreateSearchInput } from '../../src/types/search.ts';
 
 export class SearchesRepository {
   /**
-   * Buscar todas as pesquisas monitoradas do usuário
+   * Buscar todas as pesquisas monitoradas do usuÃ¡rio
    */
   static async getUserSearches(userId: string): Promise<MonitoredSearch[]> {
     const { data, error } = await supabaseAdmin
@@ -21,7 +21,7 @@ export class SearchesRepository {
   }
 
   /**
-   * Buscar uma pesquisa monitorada por ID e usuário
+   * Buscar uma pesquisa monitorada por ID e usuÃ¡rio
    */
   static async getById(id: string, userId: string): Promise<MonitoredSearch | null> {
     const { data, error } = await supabaseAdmin
@@ -41,7 +41,7 @@ export class SearchesRepository {
   }
 
   /**
-   * Criar nova pesquisa monitorada para um usuário
+   * Criar nova pesquisa monitorada para um usuÃ¡rio
    */
   static async create(userId: string, input: CreateSearchInput, queries: string[]): Promise<MonitoredSearch> {
     const now = new Date().toISOString();
@@ -99,7 +99,7 @@ export class SearchesRepository {
   }
 
   /**
-   * Atualizar resultado de execução da pesquisa
+   * Atualizar resultado de execuÃ§Ã£o da pesquisa
    */
   static async updateRunResults(
     id: string,
@@ -143,7 +143,7 @@ export class SearchesRepository {
   }
 
   /**
-   * Mapear registro do banco para o modelo de domínio MonitoredSearch
+   * Mapear registro do banco para o modelo de domÃ­nio MonitoredSearch
    */
   private static mapToDomain(row: any): MonitoredSearch {
     return {
@@ -165,3 +165,4 @@ export class SearchesRepository {
     };
   }
 }
+

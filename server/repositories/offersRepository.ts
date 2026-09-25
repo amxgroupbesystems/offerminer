@@ -1,9 +1,9 @@
-import { supabaseAdmin } from '../supabase';
-import type { Offer } from '../../src/types/offer';
+﻿import { supabaseAdmin } from '../supabase.ts';
+import type { Offer } from '../../src/types/offer.ts';
 
 export class OffersRepository {
   /**
-   * Buscar todas as ofertas registradas do usuário no banco Supabase
+   * Buscar todas as ofertas registradas do usuÃ¡rio no banco Supabase
    */
   static async getUserOffers(userId: string): Promise<Offer[]> {
     const { data: offersData, error: offersError } = await supabaseAdmin
@@ -23,7 +23,7 @@ export class OffersRepository {
 
     const offerIds = offersData.map((o) => o.id);
 
-    // Buscar anunciantes, criativos, anúncios e histórico em lote
+    // Buscar anunciantes, criativos, anÃºncios e histÃ³rico em lote
     const [advRes, creatRes, adsRes, histRes] = await Promise.all([
       supabaseAdmin.from('offer_advertisers').select('*').in('offer_id', offerIds),
       supabaseAdmin.from('offer_creatives').select('*').in('offer_id', offerIds),
@@ -48,7 +48,7 @@ export class OffersRepository {
   }
 
   /**
-   * Buscar uma oferta específica por ID ou Slug
+   * Buscar uma oferta especÃ­fica por ID ou Slug
    */
   static async getByIdOrSlug(idOrSlug: string, userId: string): Promise<Offer | null> {
     const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(idOrSlug);
@@ -83,7 +83,7 @@ export class OffersRepository {
   }
 
   /**
-   * Salvar/Mesclar lote de ofertas extraídas da mineração
+   * Salvar/Mesclar lote de ofertas extraÃ­das da mineraÃ§Ã£o
    */
   static async saveBatch(userId: string, freshOffers: Offer[]): Promise<void> {
     for (const offer of freshOffers) {
@@ -320,7 +320,7 @@ export class OffersRepository {
       })),
     };
 
-    // Adiciona o mainCreative pegando o criativo com mais anúncios (ou o primeiro), fallback para imagem vazia se não houver
+    // Adiciona o mainCreative pegando o criativo com mais anÃºncios (ou o primeiro), fallback para imagem vazia se nÃ£o houver
     const mappedCreatives = domainOffer.creatives;
     const sortedCreatives = [...mappedCreatives].sort((a, b) => b.adsUsingCount - a.adsUsingCount);
     domainOffer.mainCreative = sortedCreatives.length > 0 
@@ -336,3 +336,4 @@ export class OffersRepository {
     return domainOffer;
   }
 }
+

@@ -1,8 +1,8 @@
-import { supabaseAdmin } from '../supabase';
+﻿import { supabaseAdmin } from '../supabase.ts';
 
 export class FavoritesRepository {
   /**
-   * Buscar IDs de ofertas favoritadas pelo usuário
+   * Buscar IDs de ofertas favoritadas pelo usuÃ¡rio
    */
   static async getUserFavorites(userId: string): Promise<string[]> {
     const { data, error } = await supabaseAdmin
@@ -19,7 +19,7 @@ export class FavoritesRepository {
   }
 
   /**
-   * Alternar estado de favorito de uma oferta para o usuário
+   * Alternar estado de favorito de uma oferta para o usuÃ¡rio
    */
   static async toggleFavorite(userId: string, offerId: string): Promise<boolean> {
     const { data: existing } = await supabaseAdmin
@@ -41,7 +41,7 @@ export class FavoritesRepository {
         throw new Error(`Falha ao remover favorito: ${error.message}`);
       }
 
-      return false; // Agora não é mais favorito
+      return false; // Agora nÃ£o Ã© mais favorito
     } else {
       const { error } = await supabaseAdmin
         .from('favorites')
@@ -52,7 +52,8 @@ export class FavoritesRepository {
         throw new Error(`Falha ao adicionar favorito: ${error.message}`);
       }
 
-      return true; // Agora é favorito
+      return true; // Agora Ã© favorito
     }
   }
 }
+

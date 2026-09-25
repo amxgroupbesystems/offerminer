@@ -1,4 +1,4 @@
-import fs from 'node:fs/promises';
+﻿import fs from 'node:fs/promises';
 import path from 'node:path';
 
 const DATA_DIR = path.resolve(process.cwd(), 'server/data');
@@ -16,3 +16,4 @@ export async function writeJson<T>(name: string, value: T): Promise<void> {
   await fs.writeFile(temp, JSON.stringify(value, null, 2), 'utf8');
   await fs.rename(temp, target);
 }
+
