@@ -5,18 +5,16 @@ import {defineConfig} from 'vite';
 export default defineConfig(() => {
   return {
     plugins: [react(), tailwindcss()],
+    // Bundle the local SSR graph so Vercel's native ESM runtime does not
+    // attempt to resolve extensionless TypeScript imports at runtime.
+    ssr: { noExternal: true },
     resolve: {
       alias: {
         '@': import.meta.dirname,
       },
     },
     server: {
-      // HMR is disabled in AI Studio via DISABLE_HMR env var.
-      // Do not modify—file watching is disabled to prevent flickering during agent edits.
       hmr: process.env.DISABLE_HMR !== 'true',
-      // Disable file watching when DISABLE_HMR is true to save CPU during agent edits.
-      // Runtime JSON is written whenever a search starts or finishes. Watching
-      // those files makes Vite reload the SPA in the middle of a collection.
       watch: process.env.DISABLE_HMR === 'true' ? null : {
         ignored: ['**/server/data/**', '**/server/data/*.tmp'],
       },
