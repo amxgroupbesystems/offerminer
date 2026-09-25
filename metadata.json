@@ -1,0 +1,7 @@
+{
+  "name": "OfferMiner - Mineração de Ofertas Meta Ads",
+  "description": "Plataforma SaaS para mineração e descoberta de ofertas low ticket em escala na Meta Ads Library.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
+

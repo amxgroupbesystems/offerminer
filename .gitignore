@@ -1,0 +1,12 @@
+node_modules/
+.npm-cache/
+.env*
+logs/
+dist/
+api-dist/
+server-dist/
+test-dist/
+smoke-dist/
+scripts-dist/
+*.log
+server/data/catalog.json
